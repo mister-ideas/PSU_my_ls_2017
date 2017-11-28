@@ -17,7 +17,7 @@ CPPFLAGS=	-I include/
 
 LFLAGS=		-L lib/my/ -l my
 
-NAME=		push_swap
+NAME=		my_ls
 
 all:		$(NAME)
 
