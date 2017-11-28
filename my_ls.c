@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include "include/my.h"
 
 void sorter(char **list, int nb)
 {
@@ -26,7 +27,7 @@ void sorter(char **list, int nb)
 int main(int ac, char **av)
 {
 	struct stat s;
-	char **params = malloc(sizeof(char*) * ac - 1);
+	char **files = malloc(sizeof(char*) * ac - 1);
 	int error = 0;
 	int j = 0;
 	int k = 0;
@@ -38,22 +39,22 @@ int main(int ac, char **av)
 			write(2, "': No such file or directory\n", 29);
 			error = 1;
 		} else {
-			params[j] = malloc(sizeof(char) * 255);
-			my_strcpy(params[j], av[i]);
+			files[j] = malloc(sizeof(char) * 255);
+			my_strcpy(files[j], av[i]);
 			j++;
 			k++;
 		}
 	}
 	for (int i = 1; i < k; i++) {
-		sorter(params, k);
+		sorter(files, k);
 	}
 	for (int i = 0; i < k; i++) {
-		my_putstr(params[i]);
+		my_putstr(files[i]);
 		if (i < k - 1)
 			my_putchar(' ');
-		free(params[i]);
+		free(files[i]);
 	}
-	free(params);
+	free(files);
 	if (error == 1)
 		return (84);
 	else
