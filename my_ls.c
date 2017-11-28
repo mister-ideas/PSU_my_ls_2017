@@ -1,5 +1,5 @@
 /*
-1;4804;0c** EPITECH PROJECT, 2017
+** EPITECH PROJECT, 2017
 ** my_ls
 ** File description:
 ** my_ls.c
@@ -10,11 +10,23 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+void sorter(char **list, int nb)
+{
+	char temp[255];
+
+	for (int j = 1; j < nb; j++) {
+		if (my_strcmp(list[j - 1], list[j]) > 0) {
+			my_strcpy(temp, list[j - 1]);
+			my_strcpy(list[j - 1], list[j]);
+			my_strcpy(list[j], temp);
+		}
+	}
+}
+
 int main(int ac, char **av)
 {
 	struct stat s;
 	char **params = malloc(sizeof(char*) * ac - 1);
-	char temp[255];
 	int error = 0;
 	int j = 0;
 	int k = 0;
@@ -26,20 +38,14 @@ int main(int ac, char **av)
 			write(2, "': No such file or directory\n", 29);
 			error = 1;
 		} else {
-			params[j] = malloc(sizeof(char) * my_strlen(av[i]) + 1);
+			params[j] = malloc(sizeof(char) * 255);
 			my_strcpy(params[j], av[i]);
 			j++;
 			k++;
 		}
 	}
 	for (int i = 1; i < k; i++) {
-		for (int j = 1; j < k; j++) {
-			if (my_strcmp(params[j - 1], params[j]) > 0) {
-				my_strcpy(temp, params[j - 1]);
-				my_strcpy(params[j - 1], params[j]);
-				my_strcpy(params[j], temp);
-			}
-		}
+		sorter(params, k);
 	}
 	for (int i = 0; i < k; i++) {
 		my_putstr(params[i]);
