@@ -23,6 +23,16 @@ int main(int ac, char **av)
 	int j = 0;
 	int k = 0;
 
+	if (ac == 1) {
+		rep = opendir(".");
+		while ((file_read = readdir(rep)) != NULL) {
+			if (file_read->d_name[0] != '.') {
+				my_putstr(file_read->d_name);
+				my_putchar('\n');
+			}
+		}
+		return (0);
+	}
 	for (int i = 1; i < ac; i++) {
 		if (opendir(av[i]) == NULL) {
 			if (stat(av[i], &s) == -1) {
