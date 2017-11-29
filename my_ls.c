@@ -12,9 +12,10 @@
 #include <stdlib.h>
 #include "include/my.h"
 
-void display_folder_files(char *folder, struct dirent *file_read)
+void print_folder_files(char *folder)
 {
 	DIR *rep = NULL;
+	struct dirent *file_read;
 
 	rep = opendir(folder);
 	while ((file_read = readdir(rep)) != NULL) {
@@ -24,6 +25,26 @@ void display_folder_files(char *folder, struct dirent *file_read)
 		}
 	}
 	closedir(rep);
+}
+
+void no_param_display(char **files, char **folders, int j, int k)
+{
+	for (int i = 0; i < j; i++) {
+		my_putstr(files[i]);
+		my_putchar('\n');
+	}
+	if (j > 0 && k > 0)
+		my_putchar('\n');
+	for (int i = 0; i < k; i++) {
+		if (j > 0 || k > 1) {
+			my_putstr(folders[i]);
+			my_putstr(":\n");
+		}
+		print_folder_files(folders[i]);
+		if (i < k - 1)
+			my_putchar('\n');
+	}
+
 }
 
 void free_list(char **list, int nb)
@@ -50,13 +71,12 @@ int main(int ac, char **av)
 {
 	char **files = malloc(sizeof(char*) * (ac - 1));
 	char **folders = malloc(sizeof(char*) * (ac - 1));
-	struct dirent *file_read = NULL;
 	int error = 0;
 	int j = 0;
 	int k = 0;
 
 	if (ac == 1) {
-		display_folder_files(".", file_read);
+		print_folder_files(".");
 		return (0);
 	}
 	for (int i = 1; i < ac; i++) {
@@ -72,21 +92,7 @@ int main(int ac, char **av)
 			k++;
 		}
 	}
-	for (int i = 0; i < j; i++) {
-		my_putstr(files[i]);
-		my_putchar('\n');
-	}
-	if (j > 0 && k > 0)
-		my_putchar('\n');
-	for (int i = 0; i < k; i++) {
-		if (j > 0 || k > 1) {
-			my_putstr(folders[i]);
-			my_putstr(":\n");
-		}
-		display_folder_files(folders[i], file_read);
-		if (i < k - 1)
-			my_putchar('\n');
-	}
+	no_param_display(files, folders, j, k);
 	free_list(files, j);
 	free_list(folders, k);
 	if (error == 1)
