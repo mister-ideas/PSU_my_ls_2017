@@ -26,11 +26,30 @@ void display_folder_files(char *folder, struct dirent *file_read)
 	closedir(rep);
 }
 
+void free_list(char **list, int nb)
+{
+	for (int i = 0; i < nb; i++)
+		free(list[i]);
+	free(list);
+}
+
+int check_not_found(char **av, int i)
+{
+	struct stat s;
+
+	if (opendir(av[i]) == NULL && stat(av[i], &s) == -1) {
+		write(2, "ls: cannot access '", 19);
+		write(2, av[i], my_strlen(av[i]));
+		write(2, "': No such file or directory\n", 29);
+		return (1);
+	}
+	return (0);
+}
+
 int main(int ac, char **av)
 {
 	char **files = malloc(sizeof(char*) * (ac - 1));
 	char **folders = malloc(sizeof(char*) * (ac - 1));
-	struct stat s;
 	struct dirent *file_read = NULL;
 	int error = 0;
 	int j = 0;
@@ -41,17 +60,12 @@ int main(int ac, char **av)
 		return (0);
 	}
 	for (int i = 1; i < ac; i++) {
+		if (check_not_found(av, i) == 1)
+			error = 1;
 		if (opendir(av[i]) == NULL) {
-			if (stat(av[i], &s) == -1) {
-				write(2, "ls: cannot access '", 19);
-				write(2, av[i], my_strlen(av[i]));
-				write(2, "': No such file or directory\n", 29);
-				error = 1;
-			} else {
-				files[j] = malloc(sizeof(char) * my_strlen(av[i]) + 1);
-				my_strcpy(files[j], av[i]);
-				j++;
-			}
+			files[j] = malloc(sizeof(char) * my_strlen(av[i]) + 1);
+			my_strcpy(files[j], av[i]);
+			j++;
 		} else {
 			folders[k] = malloc(sizeof(char) * my_strlen(av[i]) + 1);
 			my_strcpy(folders[k], av[i]);
@@ -61,7 +75,6 @@ int main(int ac, char **av)
 	for (int i = 0; i < j; i++) {
 		my_putstr(files[i]);
 		my_putchar('\n');
-		free(files[i]);
 	}
 	if (j > 0 && k > 0)
 		my_putchar('\n');
@@ -73,10 +86,9 @@ int main(int ac, char **av)
 		display_folder_files(folders[i], file_read);
 		if (i < k - 1)
 			my_putchar('\n');
-		free(folders[i]);
 	}
-	free(files);
-	free(folders);
+	free_list(files, j);
+	free_list(folders, k);
 	if (error == 1)
 		return (84);
 	return (0);
