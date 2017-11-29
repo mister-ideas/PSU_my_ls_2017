@@ -54,15 +54,18 @@ void free_list(char **list, int nb)
 	free(list);
 }
 
-int check_not_found(char **av, int i)
+int check_not_found(int ac, char **av)
 {
 	struct stat s;
 
-	if (opendir(av[i]) == NULL && stat(av[i], &s) == -1) {
-		write(2, "ls: cannot access '", 19);
-		write(2, av[i], my_strlen(av[i]));
-		write(2, "': No such file or directory\n", 29);
-		return (1);
+	for (int i = 1; i < ac; i++) {
+		if (opendir(av[i]) == NULL && stat(av[i], &s) == -1) {
+			write(2, "ls: cannot access '", 19);
+			write(2, av[i], my_strlen(av[i]));
+			write(2, "': No such file or directory\n", 29);
+			av[i] = ".";
+			return (1);
+		}
 	}
 	return (0);
 }
@@ -79,9 +82,9 @@ int main(int ac, char **av)
 		print_folder_files(".");
 		return (0);
 	}
+	if (check_not_found(ac, av) == 1)
+		error = 1;
 	for (int i = 1; i < ac; i++) {
-		if (check_not_found(av, i) == 1)
-			error = 1;
 		if (opendir(av[i]) == NULL) {
 			files[j] = malloc(sizeof(char) * my_strlen(av[i]) + 1);
 			my_strcpy(files[j], av[i]);
