@@ -27,7 +27,7 @@ void print_folder_files(char *folder)
 	closedir(rep);
 }
 
-void no_param_display(char **files, char **folders, int j, int k)
+void no_flag_display(char **files, char **folders, int j, int k)
 {
 	for (int i = 0; i < j; i++) {
 		my_putstr(files[i]);
@@ -95,7 +95,7 @@ int main(int ac, char **av)
 			k++;
 		}
 	}
-	no_param_display(files, folders, j, k);
+	no_flag_display(files, folders, j, k);
 	free_list(files, j);
 	free_list(folders, k);
 	if (error == 1)
