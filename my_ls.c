@@ -46,10 +46,14 @@ int main(int ac, char **av)
 		my_putchar('\n');
 		free(files[i]);
 	}
+	if (j > 0 && k > 0)
+		my_putchar('\n');
 	for (int i = 0; i < k; i++) {
-		my_putstr(folders[i]);
-		my_putstr(":\n");
 		rep = opendir(folders[i]);
+		if (j > 0 || k > 1) {
+			my_putstr(folders[i]);
+			my_putstr(":\n");
+		}
 		while ((file_read = readdir(rep)) != NULL) {
 			if (file_read->d_name[0] != '.') {
 				my_putstr(file_read->d_name);
