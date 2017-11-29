@@ -12,25 +12,32 @@
 #include <stdlib.h>
 #include "include/my.h"
 
+void display_folder_files(char *folder, struct dirent *file_read)
+{
+	DIR *rep = NULL;
+
+	rep = opendir(folder);
+	while ((file_read = readdir(rep)) != NULL) {
+		if (file_read->d_name[0] != '.') {
+			my_putstr(file_read->d_name);
+			my_putchar('\n');
+		}
+	}
+	closedir(rep);
+}
+
 int main(int ac, char **av)
 {
 	char **files = malloc(sizeof(char*) * (ac - 1));
 	char **folders = malloc(sizeof(char*) * (ac - 1));
 	struct stat s;
 	struct dirent *file_read = NULL;
-	DIR* rep = NULL;
 	int error = 0;
 	int j = 0;
 	int k = 0;
 
 	if (ac == 1) {
-		rep = opendir(".");
-		while ((file_read = readdir(rep)) != NULL) {
-			if (file_read->d_name[0] != '.') {
-				my_putstr(file_read->d_name);
-				my_putchar('\n');
-			}
-		}
+		display_folder_files(".", file_read);
 		return (0);
 	}
 	for (int i = 1; i < ac; i++) {
@@ -59,18 +66,11 @@ int main(int ac, char **av)
 	if (j > 0 && k > 0)
 		my_putchar('\n');
 	for (int i = 0; i < k; i++) {
-		rep = opendir(folders[i]);
 		if (j > 0 || k > 1) {
 			my_putstr(folders[i]);
 			my_putstr(":\n");
 		}
-		while ((file_read = readdir(rep)) != NULL) {
-			if (file_read->d_name[0] != '.') {
-				my_putstr(file_read->d_name);
-				my_putchar('\n');
-			}
-		}
-		closedir(rep);
+		display_folder_files(folders[i], file_read);
 		if (i < k - 1)
 			my_putchar('\n');
 		free(folders[i]);
