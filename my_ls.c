@@ -11,19 +11,6 @@
 #include <stdlib.h>
 #include "include/my.h"
 
-void sorter(char **list, int nb)
-{
-	char temp[255];
-
-	for (int j = 1; j < nb; j++) {
-		if (my_strcmp(list[j - 1], list[j]) > 0) {
-			my_strcpy(temp, list[j - 1]);
-			my_strcpy(list[j - 1], list[j]);
-			my_strcpy(list[j], temp);
-		}
-	}
-}
-
 int main(int ac, char **av)
 {
 	struct stat s;
@@ -44,9 +31,6 @@ int main(int ac, char **av)
 			j++;
 			k++;
 		}
-	}
-	for (int i = 1; i < k; i++) {
-		sorter(files, k);
 	}
 	for (int i = 0; i < k; i++) {
 		my_putstr(files[i]);
