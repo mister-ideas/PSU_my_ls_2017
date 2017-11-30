@@ -7,7 +7,8 @@
 
 SRC_DIR=	.
 
-SRC=		$(SRC_DIR)/my_ls.c		\
+SRC=		$(SRC_DIR)/my_ls.c	\
+		$(SRC_DIR)/display.c
 
 OBJ=		$(SRC:.c=.o)
 
