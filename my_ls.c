@@ -70,20 +70,11 @@ int check_not_found(int ac, char **av)
 	return (0);
 }
 
-int main(int ac, char **av)
+void my_ls(int ac, char **av, char **files, char **folders)
 {
-	char **files = malloc(sizeof(char*) * (ac - 1));
-	char **folders = malloc(sizeof(char*) * (ac - 1));
-	int error = 0;
 	int j = 0;
 	int k = 0;
 
-	if (ac == 1) {
-		print_folder_files(".");
-		return (0);
-	}
-	if (check_not_found(ac, av) == 1)
-		error = 1;
 	for (int i = 1; i < ac; i++) {
 		if (opendir(av[i]) == NULL) {
 			files[j] = malloc(sizeof(char) * my_strlen(av[i]) + 1);
@@ -98,6 +89,21 @@ int main(int ac, char **av)
 	no_flag_display(files, folders, j, k);
 	free_list(files, j);
 	free_list(folders, k);
+}
+
+int main(int ac, char **av)
+{
+	char **files = malloc(sizeof(char*) * (ac - 1));
+	char **folders = malloc(sizeof(char*) * (ac - 1));
+	int error = 0;
+
+	if (ac == 1) {
+		print_folder_files(".");
+		return (0);
+	}
+	if (check_not_found(ac, av) == 1)
+		error = 1;
+	my_ls(ac, av, files, folders);
 	if (error == 1)
 		return (84);
 	return (0);
