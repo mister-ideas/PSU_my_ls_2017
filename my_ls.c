@@ -63,6 +63,8 @@ int main(int ac, char **av)
 	char **folders = malloc(sizeof(char*) * (ac - 1));
 	int error = 0;
 
+	if (files == NULL || folders == NULL)
+		return (84);
 	if (ac == 1) {
 		print_folder_files(".");
 		return (0);
