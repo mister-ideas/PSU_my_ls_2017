@@ -43,11 +43,11 @@ void my_ls(int ac, char **av, char **files, char **folders)
 
 	for (int i = 1; i < ac; i++) {
 		if (opendir(av[i]) == NULL) {
-			files[j] = malloc(sizeof(char) * my_strlen(av[i]) + 1);
+			files[j] = malloc(sizeof(char) * my_strlen(av[i]) +1);
 			my_strcpy(files[j], av[i]);
 			j++;
 		} else {
-			folders[k] = malloc(sizeof(char) * my_strlen(av[i]) + 1);
+			folders[k] = malloc(sizeof(char) * my_strlen(av[i]) +1);
 			my_strcpy(folders[k], av[i]);
 			k++;
 		}
