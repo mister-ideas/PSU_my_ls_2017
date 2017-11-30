@@ -6,7 +6,7 @@
 */
 
 #include <unistd.h>
-#include "../../include/my.h"
+#include "my.h"
 
 void my_putstr(char *str)
 {

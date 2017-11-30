@@ -10,7 +10,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include "include/my.h"
+#include "my.h"
 
 void print_folder_files(char *folder)
 {

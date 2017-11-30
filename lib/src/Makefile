@@ -17,7 +17,7 @@ OBJ=		$(SRC:.c=.o)
 
 CFLAGS=		-W -Wall -fno-builtin
 
-CPPFLAG=	-I include
+CPPFLAGS=	-I ../../include
 
 NAME=		libmy.a
 
