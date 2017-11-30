@@ -1,5 +1,5 @@
 /*
-** EPITECH PROJECT, 2017
+1;4804;0c1;4804;0c** EPITECH PROJECT, 2017
 ** my_ls
 ** File description:
 ** my_ls.c
@@ -15,16 +15,19 @@
 
 int check_not_found(int ac, char **av)
 {
+	DIR *rep = NULL;
 	struct stat s;
 
 	for (int i = 1; i < ac; i++) {
-		if (opendir(av[i]) == NULL && stat(av[i], &s) == -1) {
+		rep = opendir(av[i]);
+		if (rep == NULL && stat(av[i], &s) == -1) {
 			write(2, "ls: cannot access '", 19);
 			write(2, av[i], my_strlen(av[i]));
 			write(2, "': No such file or directory\n", 29);
 			av[i] = ".";
 			return (1);
 		}
+		closedir(rep);
 	}
 	return (0);
 }
@@ -38,19 +41,22 @@ void free_list(char **list, int nb)
 
 void my_ls(int ac, char **av, char **files, char **folders)
 {
+	DIR *rep = NULL;
 	int j = 0;
 	int k = 0;
 
 	for (int i = 1; i < ac; i++) {
-		if (opendir(av[i]) == NULL) {
+		rep = opendir(av[i]);
+		if (rep == NULL) {
 			files[j] = malloc(sizeof(char) * my_strlen(av[i]) +1);
 			my_strcpy(files[j], av[i]);
-			j++;
+			j++;	
 		} else {
 			folders[k] = malloc(sizeof(char) * my_strlen(av[i]) +1);
 			my_strcpy(folders[k], av[i]);
 			k++;
 		}
+		closedir(rep);
 	}
 	no_flag_display(files, folders, j, k);
 	free_list(files, j);
@@ -69,6 +75,7 @@ int main(int ac, char **av)
 		print_folder_files(".");
 		return (0);
 	}
+	
 	if (check_not_found(ac, av) == 1)
 		error = 1;
 	my_ls(ac, av, files, folders);
