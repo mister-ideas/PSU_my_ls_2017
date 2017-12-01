@@ -10,15 +10,22 @@
 #include "my.h"
 #include "my_ls.h"
 
+void free_list(char **list, int nb)
+{
+	for (int i = 0; i < nb; i++)
+		free(list[i]);
+	free(list);
+}
+
 void print_folder_files(char *folder)
 {
 	DIR *rep = NULL;
-	struct dirent *file_read;
+	struct dirent *file;
 
 	rep = opendir(folder);
-	while ((file_read = readdir(rep)) != NULL) {
-		if (file_read->d_name[0] != '.') {
-			my_putstr(file_read->d_name);
+	while ((file = readdir(rep)) != NULL) {
+		if (file->d_name[0] != '.') {
+			my_putstr(file->d_name);
 			my_putchar('\n');
 		}
 	}
@@ -28,8 +35,10 @@ void print_folder_files(char *folder)
 void no_flag_display(char **files, char **folders, int j, int k)
 {
 	for (int i = 0; i < j; i++) {
-		my_putstr(files[i]);
-		my_putchar('\n');
+		if (files[i][0] != '$') {
+			my_putstr(files[i]);
+			my_putchar('\n');
+		}
 	}
 	if (j > 0 && k > 0)
 		my_putchar('\n');

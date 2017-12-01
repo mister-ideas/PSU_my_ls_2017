@@ -17,26 +17,31 @@ int check_not_found(int ac, char **av)
 {
 	DIR *rep = NULL;
 	struct stat s;
+	int error = 0;
 
 	for (int i = 1; i < ac; i++) {
 		rep = opendir(av[i]);
-		if (rep == NULL && stat(av[i], &s) == -1) {
+		if (rep == NULL && stat(av[i], &s) == -1 && av[i][0] != '$') {
 			write(2, "ls: cannot access '", 19);
 			write(2, av[i], my_strlen(av[i]));
 			write(2, "': No such file or directory\n", 29);
-			av[i] = ".";
-			return (1);
+			av[i] = "$";
+			error = 1;
 		}
 		closedir(rep);
 	}
+	if (error == 1)
+		return (1);
 	return (0);
 }
 
-void free_list(char **list, int nb)
+void check_flags(char **av, char *flags, int i)
 {
-	for (int i = 0; i < nb; i++)
-		free(list[i]);
-	free(list);
+	if (av[i][0] == '-') {
+		for (int j = 1; j <= my_strlen(av[i]); j++)
+			flags[j] = av[i][j];
+		av[i] = "$";
+	}
 }
 
 void my_ls(int ac, char **av, char **files, char **folders)
@@ -67,6 +72,7 @@ int main(int ac, char **av)
 {
 	char **files = malloc(sizeof(char*) * (ac - 1));
 	char **folders = malloc(sizeof(char*) * (ac - 1));
+	char *flags = malloc(sizeof(char) * 5);
 	int error = 0;
 
 	if (files == NULL || folders == NULL)
@@ -75,6 +81,8 @@ int main(int ac, char **av)
 		print_folder_files(".");
 		return (0);
 	}
+	for (int i = 1; i < ac; i++)
+		check_flags(av, flags, i);
 	if (check_not_found(ac, av) == 1)
 		error = 1;
 	my_ls(ac, av, files, folders);

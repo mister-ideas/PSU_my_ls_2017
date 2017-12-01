@@ -12,6 +12,7 @@ void my_ls(int ac, char **av, char **files, char **folders);
 void free_list(char **list, int nb);
 void no_flag_display(char **files, char **folders, int j, int k);
 void print_folder_files(char *folder);
+void check_flags(char **av, char *flags, int i);
 
 int check_not_found(int ac, char **av);
 
