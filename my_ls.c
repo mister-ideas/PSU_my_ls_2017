@@ -1,5 +1,5 @@
 /*
-1;4804;0c1;4804;0c** EPITECH PROJECT, 2017
+** EPITECH PROJECT, 2017
 ** my_ls
 ** File description:
 ** my_ls.c
