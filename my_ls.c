@@ -50,7 +50,7 @@ void my_ls(int ac, char **av, char **files, char **folders)
 		if (rep == NULL) {
 			files[j] = malloc(sizeof(char) * my_strlen(av[i]) +1);
 			my_strcpy(files[j], av[i]);
-			j++;	
+			j++;
 		} else {
 			folders[k] = malloc(sizeof(char) * my_strlen(av[i]) +1);
 			my_strcpy(folders[k], av[i]);
@@ -75,7 +75,6 @@ int main(int ac, char **av)
 		print_folder_files(".");
 		return (0);
 	}
-	
 	if (check_not_found(ac, av) == 1)
 		error = 1;
 	my_ls(ac, av, files, folders);
