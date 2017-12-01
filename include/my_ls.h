@@ -8,11 +8,12 @@
 #ifndef MY_LS_H_
 #define MY_LS_H_
 
-void my_ls(int ac, char **av, char **files, char **folders);
+void my_ls(int ac, char **av, char **files, char **folders, char *flags);
 void free_list(char **list, int nb);
 void no_flag_display(char **files, char **folders, int j, int k);
 void print_folder_files(char *folder);
-void check_flags(char **av, char *flags, int i);
+void get_flags(int ac, char **av, char *flags);
+void check_flags(char *flags, char **files, char **folders, int j, int k);
 
 int check_not_found(int ac, char **av);
 

@@ -32,6 +32,12 @@ void print_folder_files(char *folder)
 	closedir(rep);
 }
 
+void check_flags(char *flags, char **files, char **folders, int j, int k)
+{
+	if (flags[0])
+		no_flag_display(files, folders, j, k);
+}
+
 void no_flag_display(char **files, char **folders, int j, int k)
 {
 	for (int i = 0; i < j; i++) {

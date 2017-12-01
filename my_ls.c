@@ -35,16 +35,18 @@ int check_not_found(int ac, char **av)
 	return (0);
 }
 
-void check_flags(char **av, char *flags, int i)
+void get_flags(int ac, char **av, char *flags)
 {
-	if (av[i][0] == '-') {
-		for (int j = 1; j <= my_strlen(av[i]); j++)
-			flags[j] = av[i][j];
-		av[i] = "$";
+	for (int i = 1; i < ac; i++) {
+		if (av[i][0] == '-') {
+			for (int j = 0; j < my_strlen(av[i]); j++)
+				flags[j] = av[i][j + 1];
+			av[i] = "$";
+		}
 	}
 }
 
-void my_ls(int ac, char **av, char **files, char **folders)
+void my_ls(int ac, char **av, char **files, char **folders, char *flags)
 {
 	DIR *rep = NULL;
 	int j = 0;
@@ -55,7 +57,8 @@ void my_ls(int ac, char **av, char **files, char **folders)
 		if (rep == NULL) {
 			files[j] = malloc(sizeof(char) * my_strlen(av[i]) +1);
 			my_strcpy(files[j], av[i]);
-			j++;
+			if (av[i][0] != '$')
+				j++;
 		} else {
 			folders[k] = malloc(sizeof(char) * my_strlen(av[i]) +1);
 			my_strcpy(folders[k], av[i]);
@@ -63,7 +66,7 @@ void my_ls(int ac, char **av, char **files, char **folders)
 		}
 		closedir(rep);
 	}
-	no_flag_display(files, folders, j, k);
+	check_flags(flags, files, folders, j, k);
 	free_list(files, j);
 	free_list(folders, k);
 }
@@ -72,7 +75,7 @@ int main(int ac, char **av)
 {
 	char **files = malloc(sizeof(char*) * (ac - 1));
 	char **folders = malloc(sizeof(char*) * (ac - 1));
-	char *flags = malloc(sizeof(char) * 5);
+	char *flags = malloc(sizeof(char) * 6);
 	int error = 0;
 
 	if (files == NULL || folders == NULL)
@@ -81,11 +84,12 @@ int main(int ac, char **av)
 		print_folder_files(".");
 		return (0);
 	}
-	for (int i = 1; i < ac; i++)
-		check_flags(av, flags, i);
+	flags[0] = '$';
+	get_flags(ac, av, flags);
 	if (check_not_found(ac, av) == 1)
 		error = 1;
-	my_ls(ac, av, files, folders);
+	my_ls(ac, av, files, folders, flags);
+	free(flags);
 	if (error == 1)
 		return (84);
 	return (0);
