@@ -5,16 +5,26 @@
 ** display.c
 */
 
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include "my.h"
 #include "my_ls.h"
 
-void free_list(char **list, int nb)
+void print_rights(struct stat s)
 {
-	for (int i = 0; i < nb; i++)
-		free(list[i]);
-	free(list);
+	((s.st_mode & S_IFDIR) != 0) ? my_putchar('d') : my_putchar('-');
+	((s.st_mode & S_IRUSR) != 0) ? my_putchar('r') : my_putchar('-');
+	((s.st_mode & S_IWUSR) != 0) ? my_putchar('w') : my_putchar('-');
+	((s.st_mode & S_IXUSR) != 0) ? my_putchar('x') : my_putchar('-');
+	((s.st_mode & S_IRGRP) != 0) ? my_putchar('r') : my_putchar('-');
+	((s.st_mode & S_IWGRP) != 0) ? my_putchar('w') : my_putchar('-');
+	((s.st_mode & S_IXGRP) != 0) ? my_putchar('x') : my_putchar('-');
+	((s.st_mode & S_IROTH) != 0) ? my_putchar('r') : my_putchar('-');
+	((s.st_mode & S_IWOTH) != 0) ? my_putchar('w') : my_putchar('-');
+	((s.st_mode & S_IXOTH) != 0) ? my_putchar('x') : my_putchar('-');
 }
 
 void print_folder_files(char *folder)
@@ -32,10 +42,21 @@ void print_folder_files(char *folder)
 	closedir(rep);
 }
 
-void check_flags(char *flags, char **files, char **folders, int j, int k)
+void l_print_folder_files(char *folder)
 {
-	if (flags[0])
-		no_flag_display(files, folders, j, k);
+	DIR *rep = NULL;
+	struct dirent *file;
+	struct stat s;
+
+	rep = opendir(folder);
+	while ((file = readdir(rep)) != NULL) {
+		if (file->d_name[0] != '.') {
+			stat(file->d_name, &s);
+			print_rights(s);
+			my_putstr(".\n");
+		}
+	}
+	closedir(rep);
 }
 
 void no_flag_display(char **files, char **folders, int j, int k)
@@ -58,4 +79,28 @@ void no_flag_display(char **files, char **folders, int j, int k)
 			my_putchar('\n');
 	}
 
+}
+
+void l_flag_display(char **files, char **folders, int j, int k)
+{
+	struct stat s;
+
+	for (int i = 0; i < j; i++) {
+		if (files[i][0] != '$') {
+			stat(files[i], &s);
+			print_rights(s);
+			my_putstr(".\n");
+		}
+	}
+	if (j > 0 && k > 0)
+		my_putchar('\n');
+	for (int i = 0; i < k; i++) {
+		if (j > 0 || k > 1) {
+			my_putstr(folders[i]);
+			my_putstr(":\n");
+		}
+		l_print_folder_files(folders[i]);
+		if (i < k - 1)
+			my_putchar('\n');
+	}
 }

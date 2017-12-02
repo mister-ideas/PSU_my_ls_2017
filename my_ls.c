@@ -51,12 +51,14 @@ void my_ls(int ac, char **av, char **files, char **folders, char *flags)
 	DIR *rep = NULL;
 	int j = 0;
 	int k = 0;
+	int m = 0;
 
 	for (int i = 1; i < ac; i++) {
 		rep = opendir(av[i]);
 		if (rep == NULL) {
 			files[j] = malloc(sizeof(char) * my_strlen(av[i]) +1);
 			my_strcpy(files[j], av[i]);
+			m++;
 			if (av[i][0] != '$')
 				j++;
 		} else {
@@ -67,7 +69,7 @@ void my_ls(int ac, char **av, char **files, char **folders, char *flags)
 		closedir(rep);
 	}
 	check_flags(flags, files, folders, j, k);
-	free_list(files, j);
+	free_list(files, m);
 	free_list(folders, k);
 }
 
@@ -80,12 +82,18 @@ int main(int ac, char **av)
 
 	if (files == NULL || folders == NULL)
 		return (84);
+	flags[0] = '$';
+	get_flags(ac, av, flags);
 	if (ac == 1) {
 		print_folder_files(".");
 		return (0);
 	}
-	flags[0] = '$';
-	get_flags(ac, av, flags);
+	if (ac == 2) {
+		if (flags[0] == 'l') {
+			l_print_folder_files(".");
+			return (0);
+		}
+	}
 	if (check_not_found(ac, av) == 1)
 		error = 1;
 	my_ls(ac, av, files, folders, flags);
