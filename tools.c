@@ -45,10 +45,7 @@ void print_rights(struct stat s)
 	((s.st_mode & S_IXOTH) != 0) ? my_putchar('x') : my_putchar('-');
 }
 
-void l_display(struct passwd *passwd,
-	       struct group *group,
-	       char *path,
-	       char *file)
+void l_display(struct passwd *passwd, struct group *group, char *path, char *file)
 {
 	struct stat s;
 	char *mtime;
