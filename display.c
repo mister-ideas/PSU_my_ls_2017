@@ -52,14 +52,19 @@ void l_print_folder_files(char *folder)
 	struct stat s;
 	struct passwd *passwd;
 	struct group *group;
+	char path[255];
 	char *mtime;
 
+	if (folder[my_strlen(folder) - 1] != '/')
+		my_strcat(folder, "/");
 	rep = opendir(folder);
 	my_putstr("total");
 	my_putchar('\n');
 	while ((file = readdir(rep)) != NULL) {
 		if (file->d_name[0] != '.') {
-			stat(file->d_name, &s);
+			my_strcpy(path, folder);
+			my_strcat(path, file->d_name);
+			stat(path, &s);
 			print_rights(s);
 			my_putstr(". ");
 			my_put_nbr(s.st_nlink);
