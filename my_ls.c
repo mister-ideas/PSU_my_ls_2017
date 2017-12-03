@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "my.h"
 #include "my_ls.h"
 
@@ -24,7 +25,8 @@ int check_not_found(int ac, char **av)
 		if (rep == NULL && stat(av[i], &s) == -1 && av[i][0] != '$') {
 			write(2, "ls: cannot access '", 19);
 			write(2, av[i], my_strlen(av[i]));
-			write(2, "': No such file or directory\n", 29);
+			write(2, "': ", 3);
+			perror("");
 			av[i] = "$";
 			error = 1;
 		}
