@@ -47,11 +47,16 @@ void l_print_folder_files(char *folder)
 	DIR *rep = NULL;
 	struct dirent *file;
 	struct stat s;
+	char name[255];
 
 	rep = opendir(folder);
 	while ((file = readdir(rep)) != NULL) {
+		if (folder[my_strlen(folder) - 1] != '/')
+			my_strcat(folder, "/");
 		if (file->d_name[0] != '.') {
-			stat(file->d_name, &s);
+			my_strcpy(name, folder);
+			my_strcat(name, file->d_name);
+			stat(name, &s);
 			print_rights(s);
 			my_putstr(".\n");
 		}
