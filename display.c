@@ -112,12 +112,30 @@ void no_flag_display(char **files, char **folders, int j, int k)
 void l_flag_display(char **files, char **folders, int j, int k)
 {
 	struct stat s;
+	struct passwd *passwd;
+	struct group *group;
+	char *mtime;
 
 	for (int i = 0; i < j; i++) {
 		if (files[i][0] != '$') {
 			stat(files[i], &s);
 			print_rights(s);
-			my_putstr(".\n");
+			my_putstr(". ");
+			my_put_nbr(s.st_nlink);
+			my_putchar(' ');
+			passwd = getpwuid(s.st_uid);
+			my_putstr(passwd->pw_name);
+			my_putchar(' ');
+			group = getgrgid(s.st_gid);
+			my_putstr(group->gr_name);
+			my_putchar(' ');
+			my_put_nbr(s.st_size);
+			my_putchar(' ');
+			mtime = ctime(&(s.st_mtim.tv_sec));
+			write(1, mtime + 4, 12);
+			my_putchar(' ');
+			my_putstr(files[i]);
+			my_putchar('\n');
 		}
 	}
 	if (j > 0 && k > 0)

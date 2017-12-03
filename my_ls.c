@@ -64,7 +64,7 @@ void my_ls(int ac, char **av, char **files, char **folders, char *flags)
 			if (av[i][0] != '$')
 				j++;
 		} else {
-			folders[k] = malloc(sizeof(char) * my_strlen(av[i]) +1);
+			folders[k] = malloc(sizeof(char) * my_strlen(av[i]) +2);
 			my_strcpy(folders[k], av[i]);
 			k++;
 		}
