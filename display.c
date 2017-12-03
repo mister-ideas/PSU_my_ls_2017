@@ -10,6 +10,9 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <pwd.h>
+#include <grp.h>
+#include <time.h>
 #include "my.h"
 #include "my_ls.h"
 
@@ -47,18 +50,33 @@ void l_print_folder_files(char *folder)
 	DIR *rep = NULL;
 	struct dirent *file;
 	struct stat s;
-	char name[255];
+	struct passwd *passwd;
+	struct group *group;
+	char *mtime;
 
 	rep = opendir(folder);
+	my_putstr("total");
+	my_putchar('\n');
 	while ((file = readdir(rep)) != NULL) {
-		if (folder[my_strlen(folder) - 1] != '/')
-			my_strcat(folder, "/");
 		if (file->d_name[0] != '.') {
-			my_strcpy(name, folder);
-			my_strcat(name, file->d_name);
-			stat(name, &s);
+			stat(file->d_name, &s);
 			print_rights(s);
-			my_putstr(".\n");
+			my_putstr(". ");
+			my_put_nbr(s.st_nlink);
+			my_putchar(' ');
+			passwd = getpwuid(s.st_uid);
+			my_putstr(passwd->pw_name);
+			my_putchar(' ');
+			group = getgrgid(s.st_gid);
+			my_putstr(group->gr_name);
+			my_putchar(' ');
+			my_put_nbr(s.st_size);
+			my_putchar(' ');
+			mtime = ctime(&(s.st_mtim.tv_sec));
+			write(1, mtime + 4, 12);
+			my_putchar(' ');
+			my_putstr(file->d_name);
+			my_putchar('\n');
 		}
 	}
 	closedir(rep);
